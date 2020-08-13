@@ -1,0 +1,291 @@
+<html>
+	<head>
+		
+	</head>
+	<body>
+			<h1>Kuizi i Matematikes</h1>
+	<div class="quiz-container">
+	  <div id="quiz"></div>
+	</div>
+	<br>
+	
+	<button id="next">Vazhdo</button>
+	<button id="submit">Dorezo Kuizin</button>
+	<div id="results"></div>
+	<style>
+	@import url(https://fonts.googleapis.com/css?family=Work+Sans:300,600);
+
+body{
+	font-size: 20px;
+	font-family: 'Work Sans', sans-serif;
+	color: #333;
+  font-weight: 300;
+  text-align: center;
+  background-color: #f8f6f0;
+}
+h1{
+  font-weight: 300;
+  margin: 0px;
+  padding: 10px;
+  font-size: 20px;
+  background-color: #444;
+  color: #fff;
+}
+.question{
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+.answers {
+  margin-bottom: 20px;
+  text-align: left;
+  display: inline-block;
+}
+.answers label{
+  display: block;
+  margin-bottom: 10px;
+}
+button{
+  font-family: 'Work Sans', sans-serif;
+	font-size: 22px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
+button:hover{
+	background-color: #38a;
+}
+
+
+
+
+
+.slide{
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.active-slide{
+  opacity: 1;
+  z-index: 2;
+}
+.quiz-container{
+  position: relative;
+  height: 200px;
+  margin-top: 40px;
+}
+</style>
+		<script type="text/javascript">
+			(function(){
+  // Functions
+  function buildQuiz(){
+    // variable to store the HTML output
+    const output = [];
+
+    // for each question...
+    myQuestions.forEach(
+      (currentQuestion, questionNumber) => {
+
+        // variable to store the list of possible answers
+        const answers = [];
+
+        // and for each available answer...
+        for(letter in currentQuestion.answers){
+
+          // ...add an HTML radio button
+          answers.push(
+            `<label>
+              <input type="radio" name="question${questionNumber}" value="${letter}">
+              ${letter} :
+              ${currentQuestion.answers[letter]}
+            </label>`
+          );
+        }
+
+        // add this question and its answers to the output
+        output.push(
+          `<div class="slide">
+            <div class="question"> ${currentQuestion.question} </div>
+            <div class="answers"> ${answers.join("")} </div>
+          </div>`
+        );
+      }
+    );
+
+    // finally combine our output list into one string of HTML and put it on the page
+    quizContainer.innerHTML = output.join('');
+  }
+
+  function showResults(){
+
+    // gather answer containers from our quiz
+    const answerContainers = quizContainer.querySelectorAll('.answers');
+
+    // keep track of user's answers
+    let numCorrect = 0;
+
+    // for each question...
+    myQuestions.forEach( (currentQuestion, questionNumber) => {
+
+      // find selected answer
+      const answerContainer = answerContainers[questionNumber];
+      const selector = `input[name=question${questionNumber}]:checked`;
+      const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+      // if answer is correct
+      if(userAnswer === currentQuestion.correctAnswer){
+        // add to the number of correct answers
+        numCorrect++;
+
+        // color the answers green
+        answerContainers[questionNumber].style.color = 'lightgreen';
+      }
+      // if answer is wrong or blank
+      else{
+        // color the answers red
+        answerContainers[questionNumber].style.color = 'red';
+      }
+    });
+
+    // show number of correct answers out of total
+    resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
+  }
+
+  function showSlide(n) {
+    slides[currentSlide].classList.remove('active-slide');
+    slides[n].classList.add('active-slide');
+    currentSlide = n;
+    if(currentSlide === 0){
+      
+    }
+    
+    if(currentSlide === slides.length-1){
+      nextButton.style.display = 'none';
+      submitButton.style.display = 'inline-block';
+    }
+    else{
+      nextButton.style.display = 'inline-block';
+      submitButton.style.display = 'none';
+    }
+  }
+
+  function showNextSlide() {
+    showSlide(currentSlide + 1);
+  }
+
+ 
+
+  // Variables
+  const quizContainer = document.getElementById('quiz');
+  const resultsContainer = document.getElementById('results');
+  const submitButton = document.getElementById('submit');
+  const myQuestions = [
+    {
+      question: "Një CD me lojra kompjuterike kushtonte 40 euro.Tani është në zbritje 15%. Sa është çmimi i saj i ri? ",
+      answers: {
+        a: "24 euro",
+        b: "26 euro",
+        c: "30 euro",
+        d: "34 euro"
+      },
+      correctAnswer: "d"
+    },
+    {
+      question: "Një pishinë e vogël ka formë kuboidi me gjatësi 12m , gjerësi 5m dhe thellësi 2m.Gjatë reshjeve të shiut ishte mbushur me ujë 1/3 e saj. Sa metra kub ujë janë akumuluar në pishinë ? ",
+      answers: {
+        a: "19 m<sup>3</sup>",
+        b: "40 m<sup>3</sup>",
+        c: "60 m<sup>3</sup>",
+        d: "120 m<sup>3</sup>"
+      },
+      correctAnswer: "b"
+    },
+    {
+      question: " Rrota e automobilit me rreze 0.3m rrotullohet 25 herë. Cila vlerë paraqet më së afërmi rrugën e kaluar nga ajo?(Perimetri i rrethit është P=2·r·π.Për π të merret vlera 3.14). ",
+      answers: {
+        a: "25.1 metra",
+        b: "47.1 metra",
+        c: "75 metra",
+        d: "87 metra"
+      },
+      correctAnswer: "b"
+    },
+    {
+      question: " Një gotë zë 300ml lëng. Sa ml  lëng ka në gotë nëse është e mbushur me lëng 1/4 e saj? ",
+      answers: {
+        a: "100ml",
+        b: "200ml",
+        c: "225ml",
+        d: "275ml"
+      },
+      correctAnswer: "d"
+    },
+    {
+     question: " Perimetri i drejtëkëndëshit është P=2(a+b). Sa është brinja <i>a</i> e tij? ",
+      answers: {
+        a: "a = <sup>2</sup>/<sub>P</sub> - b",
+        b: "a = <sup>P</sup>/<sub>b</sub> + 2",
+        c: "a = <sup>P</sup>/<sub>2</sub> - b",
+        d: "a = <sup>P</sup>/<sub>2</sub> + b"
+      },
+      correctAnswer: "c"
+    },
+     {
+      question: " Raporti i të ardhurave të dy punëtorëve nga një punë e përbashkët është 4:3.Punëtorit të dytë i janë dhënë 1500€. Sa € duhet dhënë punëtorit të parë?  ",
+      answers: {
+        a: "1500 &euro;",
+        b: "2000 &euro;",
+        c: "4500 &euro;",
+        d: "6000 &euro;"
+      },
+      correctAnswer: "b"
+    },
+    {
+      question: "  Përqindja e hekurit në një mineral është 4% .Sa kg hekur kanë 17 ton mineral të tillë?  ",
+      answers: {
+        a: "480 kg hekur",
+        b: "570 kg hekur",
+        c: "680 kg hekur",
+        d: "750 kg hekur"
+      },
+      correctAnswer: "c"
+    },
+    {
+      question: "  Sa është probabiliteti që me rastin e hudhjes së zarit i cili ka të shënuar numrat nga 1 deri në 6,të bie numër më i madh ose i barabartë me 2?  ",
+      answers: {
+        a: "<sup>3</sup>/<sub>4</sub>",
+        b: "<sup>5</sup>/<sub>6</sub>",
+        c: "<sup>1</sup>/<sub>6</sub>",
+        d: "<sup>1</sup>/<sub>3</sub>"
+      },
+      correctAnswer: "b"
+    },
+  ];
+
+  // Kick things off
+  buildQuiz();
+
+  // Pagination
+  const nextButton = document.getElementById("next");
+  const slides = document.querySelectorAll(".slide");
+  let currentSlide = 0;
+
+  // Show the first slide
+  showSlide(currentSlide);
+
+  // Event listeners
+  submitButton.addEventListener('click', showResults);
+  
+  nextButton.addEventListener("click", showNextSlide);
+})();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,282 @@
+<html>
+	<head>
+		
+	</head>
+	<body>
+			<h1>Kuizi i Kimise</h1>
+	<div class="quiz-container">
+	  <div id="quiz"></div>
+	</div>
+	<br>
+	
+	<button id="next">Vazhdo</button>
+	<button id="submit">Dorezo Kuizin</button>
+	<div id="results"></div>
+	<style>
+	@import url(https://fonts.googleapis.com/css?family=Work+Sans:300,600);
+
+body{
+	font-size: 20px;
+	font-family: 'Work Sans', sans-serif;
+	color: #333;
+  font-weight: 300;
+  text-align: center;
+  background-color: #f8f6f0;
+}
+h1{
+  font-weight: 300;
+  margin: 0px;
+  padding: 10px;
+  font-size: 20px;
+  background-color: #444;
+  color: #fff;
+}
+.question{
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+.answers {
+  margin-bottom: 20px;
+  text-align: left;
+  display: inline-block;
+}
+.answers label{
+  display: block;
+  margin-bottom: 10px;
+}
+button{
+  font-family: 'Work Sans', sans-serif;
+	font-size: 22px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
+button:hover{
+	background-color: #38a;
+}
+
+
+
+
+
+.slide{
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.active-slide{
+  opacity: 1;
+  z-index: 2;
+}
+.quiz-container{
+  position: relative;
+  height: 200px;
+  margin-top: 40px;
+}
+</style>
+		<script type="text/javascript">
+			(function(){
+  // Functions
+  function buildQuiz(){
+    // variable to store the HTML output
+    const output = [];
+
+    // for each question...
+    myQuestions.forEach(
+      (currentQuestion, questionNumber) => {
+
+        // variable to store the list of possible answers
+        const answers = [];
+
+        // and for each available answer...
+        for(letter in currentQuestion.answers){
+
+          // ...add an HTML radio button
+          answers.push(
+            `<label>
+              <input type="radio" name="question${questionNumber}" value="${letter}">
+              ${letter} :
+              ${currentQuestion.answers[letter]}
+            </label>`
+          );
+        }
+
+        // add this question and its answers to the output
+        output.push(
+          `<div class="slide">
+            <div class="question"> ${currentQuestion.question} </div>
+            <div class="answers"> ${answers.join("")} </div>
+          </div>`
+        );
+      }
+    );
+
+    // finally combine our output list into one string of HTML and put it on the page
+    quizContainer.innerHTML = output.join('');
+  }
+
+  function showResults(){
+
+    // gather answer containers from our quiz
+    const answerContainers = quizContainer.querySelectorAll('.answers');
+
+    // keep track of user's answers
+    let numCorrect = 0;
+
+    // for each question...
+    myQuestions.forEach( (currentQuestion, questionNumber) => {
+
+      // find selected answer
+      const answerContainer = answerContainers[questionNumber];
+      const selector = `input[name=question${questionNumber}]:checked`;
+      const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+      // if answer is correct
+      if(userAnswer === currentQuestion.correctAnswer){
+        // add to the number of correct answers
+        numCorrect++;
+
+        // color the answers green
+        answerContainers[questionNumber].style.color = 'lightgreen';
+      }
+      // if answer is wrong or blank
+      else{
+        // color the answers red
+        answerContainers[questionNumber].style.color = 'red';
+      }
+    });
+
+    // show number of correct answers out of total
+    resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
+  }
+
+  function showSlide(n) {
+    slides[currentSlide].classList.remove('active-slide');
+    slides[n].classList.add('active-slide');
+    currentSlide = n;
+    if(currentSlide === 0){
+      
+    }
+    
+    if(currentSlide === slides.length-1){
+      nextButton.style.display = 'none';
+      submitButton.style.display = 'inline-block';
+    }
+    else{
+      nextButton.style.display = 'inline-block';
+      submitButton.style.display = 'none';
+    }
+  }
+
+  function showNextSlide() {
+    showSlide(currentSlide + 1);
+  }
+
+ 
+
+  // Variables
+  const quizContainer = document.getElementById('quiz');
+  const resultsContainer = document.getElementById('results');
+  const submitButton = document.getElementById('submit');
+  const myQuestions = [
+    {
+      question: " Cili është emërtimi i saktë i N2O sipas IUPAC-ut?",    
+      answers: {
+        a: "Oksidi i azotit (I)",
+        b: "Oksidi i azotit (II)",
+        c: "Oksidi i azotit (III)",
+        d: "Oksidi i azotit (IV)"
+      },
+      correctAnswer: "a"
+    },
+    {
+      question: "Në cilin rast është paraqitur reaksioni i balancuar kimik?",
+      answers: {
+        a: "Zn + HCl = ZnCl2 + H2",
+        b: "Zn + 2HCl = ZnCl2 + H2",
+        c: "Zn + 2HCl = ZnCl2 + 2H2",
+        d: "2Zn + 2HCl = 2ZnCl2 + H2"
+      },
+      correctAnswer: "a"
+    },
+    {
+      question: " Etanalime reduktim jep komponimin X i cilime dehidratim kalon në eten. Cili është komponimi X? ",
+      answers: {
+        a: "CH3COCH3",
+        b: "CH3COOH",
+        c: "CH3CH2OH",
+        d: "CH3COCH"
+      },
+      correctAnswer: "c"
+    },
+    {
+      question: " Çfarë formojnë atomet të cilët japin elektrone? ",
+      answers: {
+        a: "Anione",
+        b: "Protone",
+        c: "Molekula",
+        d: "Katione"
+      },
+      correctAnswer: "d"
+    },
+    {
+     question: " Me rritjen e temperaturës për 100C shpejtësia e reaksionit kimik rritet për 2 herë. Për sa herë do të rritet shpejtësia e reaksionit nëse temperatura rritet prej 200C në 400C? ",
+      answers: {
+        a: "2 herë",
+        b: "4 herë",
+        c: "6 herë",
+        d: "8 herë"
+      },
+      correctAnswer: "b"
+    },
+     {
+      question: " Në cilin nga këto okside vijuese kur vepron me ujë letra e lakmuesit merr ngjyrë të kaltër?  ",
+      answers: {
+        a: "N<sub>2</sub>O<sub>5</sub>",
+        b: "K<sub>2</sub>O",
+        c: "SO<sub>3</sub>",
+        d: "CO<sub>2</sub>"
+      },
+      correctAnswer: "b"
+    },
+    {
+      question: "  Cili nga komponimet në vijim është komponim organik?  ",
+      answers: {
+        a: "Kripa e gjellës",
+        b: "Oksidi i azotit",
+        c: "Yndyra",
+        d: "Uji"
+      },
+      correctAnswer: "c"
+    },
+    
+  ];
+
+  // Kick things off
+  buildQuiz();
+
+  // Pagination
+  const nextButton = document.getElementById("next");
+  const slides = document.querySelectorAll(".slide");
+  let currentSlide = 0;
+
+  // Show the first slide
+  showSlide(currentSlide);
+
+  // Event listeners
+  submitButton.addEventListener('click', showResults);
+  
+  nextButton.addEventListener("click", showNextSlide);
+})();
+		</script>
+	</body>
+</html>
